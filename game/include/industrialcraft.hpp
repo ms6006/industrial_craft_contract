@@ -24,6 +24,18 @@ CONTRACT industrialcraft : public contract {
     static constexpr int32_t Legendary_Pickaxe = 606638;
     static constexpr int32_t Industrial_Pickaxe = 606639;
 
+    //Drill
+    static constexpr int32_t Common_Drill = 607305;
+    static constexpr int32_t Rare_Drill = 607306;
+    static constexpr int32_t Legendary_Drill = 607307;
+    static constexpr int32_t Industrial_Drill = 607308;
+
+    //MineMachine
+    static constexpr int32_t Common_Mine_Machine = 607309;
+    static constexpr int32_t Rare_Mine_Machine = 607310;
+    static constexpr int32_t Legendary_Mine_Machine = 607311;
+    static constexpr int32_t Industrial_Mine_Machine = 607312;
+
     static constexpr uint8_t pickaxe = 1;
     static constexpr uint8_t drill = 2;
     static constexpr uint8_t mine_machine = 3;

@@ -144,6 +144,40 @@ ACTION industrialcraft::farm(const name &user,const uint64_t &asset_id){
         });
         return;
     }
+
+    if(template_id==Common_Drill || template_id==Rare_Drill || template_id==Legendary_Drill || template_id==Industrial_Drill) {
+        check(account->drill > 0, "all farm sites in use");
+        state.emplace(user, [&](auto &row) {
+            row.type = drill;
+            row.assets_id = asset_id;
+            row.time = time_point_sec(current_time_point().sec_since_epoch());
+        });
+        stakes.modify(tool, same_payer, [&](auto &row) {
+            row.uses = tool->uses - 1;
+            row.availability = false;
+        });
+        accounts.modify(account, same_payer, [&](auto &row) {
+            row.drill = account->drill - 1;
+        });
+        return;
+    }
+
+    if(template_id==Common_Mine_Machine || template_id==Rare_Mine_Machine || template_id==Legendary_Mine_Machine || template_id==Industrial_Mine_Machine) {
+        check(account->mine_machine > 0, "all farm sites in use");
+        state.emplace(user, [&](auto &row) {
+            row.type = mine_machine;
+            row.assets_id = asset_id;
+            row.time = time_point_sec(current_time_point().sec_since_epoch());
+        });
+        stakes.modify(tool, same_payer, [&](auto &row) {
+            row.uses = tool->uses - 1;
+            row.availability = false;
+        });
+        accounts.modify(account, same_payer, [&](auto &row) {
+            row.mine_machine = account->mine_machine - 1;
+        });
+        return;
+    }
 }
 
 ACTION industrialcraft::unfarm(const name &user,const uint64_t &asset_id){
@@ -194,6 +228,36 @@ ACTION industrialcraft::unfarm(const name &user,const uint64_t &asset_id){
         accounts.modify(account, same_payer, [&](auto &row) {
             row.ics = ics;
             row.pickaxe = account->pickaxe + 1;
+        });
+        stakes.modify(tool, same_payer, [&](auto &row){
+            row.availability = true;
+        });
+        action(permission_level{get_self(), name("active")}, TOKEN_CONTRACT, name("issue"),
+               make_tuple(get_self(), conf->mine, std::string("Farming - " + user.to_string())))
+                .send();
+        return;
+    }
+
+    if(template_id==Common_Drill || template_id==Rare_Drill || template_id==Legendary_Drill || template_id==Industrial_Drill) {
+        auto ics = account->ics + conf->mine;
+        accounts.modify(account, same_payer, [&](auto &row) {
+            row.ics = ics;
+            row.drill = account->drill + 1;
+        });
+        stakes.modify(tool, same_payer, [&](auto &row){
+            row.availability = true;
+        });
+        action(permission_level{get_self(), name("active")}, TOKEN_CONTRACT, name("issue"),
+               make_tuple(get_self(), conf->mine, std::string("Farming - " + user.to_string())))
+                .send();
+        return;
+    }
+
+    if(template_id==Common_Mine_Machine || template_id==Rare_Mine_Machine || template_id==Legendary_Mine_Machine || template_id==Industrial_Mine_Machine) {
+        auto ics = account->ics + conf->mine;
+        accounts.modify(account, same_payer, [&](auto &row) {
+            row.ics = ics;
+            row.mine_machine = account->mine_machine + 1;
         });
         stakes.modify(tool, same_payer, [&](auto &row){
             row.availability = true;
