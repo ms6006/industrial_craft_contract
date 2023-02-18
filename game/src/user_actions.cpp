@@ -239,9 +239,9 @@ ACTION industrialcraft::unfarm(const name &user,const uint64_t &asset_id){
     }
 
     if(template_id==Common_Drill || template_id==Rare_Drill || template_id==Legendary_Drill || template_id==Industrial_Drill) {
-        auto ics = account->ics + conf->mine;
+        auto ici = account->ici + conf->mine;
         accounts.modify(account, same_payer, [&](auto &row) {
-            row.ics = ics;
+            row.ici = ici;
             row.drill = account->drill + 1;
         });
         stakes.modify(tool, same_payer, [&](auto &row){
@@ -254,9 +254,9 @@ ACTION industrialcraft::unfarm(const name &user,const uint64_t &asset_id){
     }
 
     if(template_id==Common_Mine_Machine || template_id==Rare_Mine_Machine || template_id==Legendary_Mine_Machine || template_id==Industrial_Mine_Machine) {
-        auto ics = account->ics + conf->mine;
+        auto icg = account->icg + conf->mine;
         accounts.modify(account, same_payer, [&](auto &row) {
-            row.ics = ics;
+            row.icg = icg;
             row.mine_machine = account->mine_machine + 1;
         });
         stakes.modify(tool, same_payer, [&](auto &row){
