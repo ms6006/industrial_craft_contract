@@ -118,7 +118,7 @@ ACTION industrialcraft::farm(const name &user,const uint64_t &asset_id){
     bool f = true;
     if(toolstuck->availability==false){
         f = false;
-        if((toolstuck->time_hours*3600) <= (current_time_point().sec_since_epoch() - (toolstuck->time).sec_since_epoch())) {
+        if((toolstuck->time_hours*60) <= (current_time_point().sec_since_epoch() - (toolstuck->time).sec_since_epoch())) {
             stucktool.modify(toolstuck, same_payer, [&](auto &row) {
                 row.availability = true;
             });
@@ -233,7 +233,7 @@ ACTION industrialcraft::unfarm(const name &user,const uint64_t &asset_id){
             row.availability = true;
         });
         action(permission_level{get_self(), name("active")}, TOKEN_CONTRACT, name("issue"),
-               make_tuple(get_self(), conf->mine, std::string("Farming - " + user.to_string())))
+               make_tuple(get_self(), conf->mine, std::string("Farming " + to_string(template_id) + " - " + user.to_string())))
                 .send();
         return;
     }
@@ -248,7 +248,7 @@ ACTION industrialcraft::unfarm(const name &user,const uint64_t &asset_id){
             row.availability = true;
         });
         action(permission_level{get_self(), name("active")}, TOKEN_CONTRACT, name("issue"),
-               make_tuple(get_self(), conf->mine, std::string("Farming - " + user.to_string())))
+               make_tuple(get_self(), conf->mine, std::string("Farming " + to_string(template_id) + " - " + user.to_string())))
                 .send();
         return;
     }
@@ -263,7 +263,7 @@ ACTION industrialcraft::unfarm(const name &user,const uint64_t &asset_id){
             row.availability = true;
         });
         action(permission_level{get_self(), name("active")}, TOKEN_CONTRACT, name("issue"),
-               make_tuple(get_self(), conf->mine, std::string("Farming - " + user.to_string())))
+               make_tuple(get_self(), conf->mine, std::string("Farming " + to_string(template_id) + " - " + user.to_string())))
                 .send();
         return;
     }
@@ -282,10 +282,25 @@ ACTION industrialcraft::fullrepair(const name &user,const uint64_t &asset_id){
     auto tool = stakes.require_find(asset_id, "first you need to deposit this tool");
     auto template_id = tool->template_id;
 
+    stucktool_t stucktool(get_self(), get_self().value);
+    auto toolstuck = stucktool.find(asset_id);
+
     toolconfig_t toolconf(get_self(), get_self().value);
     auto conf = toolconf.find(template_id);
 
-    check(tool->availability==true, "the tool is already in use");
+    bool f = true;
+    if(toolstuck->availability==false){
+        f = false;
+        if((toolstuck->time_hours*60) <= (current_time_point().sec_since_epoch() - (toolstuck->time).sec_since_epoch())) {
+            stucktool.modify(toolstuck, same_payer, [&](auto &row) {
+                row.availability = true;
+            });
+            f = true;
+        }
+    }
+
+    check(tool->availability==true, "tool is already in use");
+    check(f==true, "tool stuck " + to_string(asset_id));
     check((tool->uses)<conf->uses, "don`t need to repair");
 
     check(account->ics>=conf->ics_repair, "insufficient funds");
@@ -305,19 +320,19 @@ ACTION industrialcraft::fullrepair(const name &user,const uint64_t &asset_id){
     if(conf->ics_repair.amount > 0)
     action(permission_level{get_self(), name("active")}, TOKEN_CONTRACT, name("retire"),
            make_tuple(conf->ics_repair,
-                      std::string("Full Repair - " + user.to_string())))
+                      std::string("Full Repair " + to_string(template_id) + " - " + user.to_string())))
             .send();
 
     if(conf->ici_repair.amount > 0)
     action(permission_level{get_self(), name("active")}, TOKEN_CONTRACT, name("retire"),
            make_tuple(conf->ici_repair,
-                      std::string("Full Repair - " + user.to_string())))
+                      std::string("Full Repair " + to_string(template_id) + " - " + user.to_string())))
             .send();
 
     if(conf->icg_repair.amount > 0)
     action(permission_level{get_self(), name("active")}, TOKEN_CONTRACT, name("retire"),
            make_tuple(conf->icg_repair,
-                      std::string("Full Repair - " + user.to_string())))
+                      std::string("Full Repair " + to_string(template_id) + " - " + user.to_string())))
             .send();
 }
 
@@ -358,19 +373,19 @@ ACTION industrialcraft::craft(const name &schema_name, const int32_t &template_i
     if(conftool->ics_craft.amount > 0)
         action(permission_level{get_self(), name("active")}, TOKEN_CONTRACT, name("retire"),
                make_tuple(conftool->ics_craft,
-                          std::string("Craft " + to_string(template_id) + " user " + new_asset_owner.to_string())))
+                          std::string("Craft " + to_string(template_id) + " - " + new_asset_owner.to_string())))
                 .send();
 
     if(conftool->ici_craft.amount > 0)
         action(permission_level{get_self(), name("active")}, TOKEN_CONTRACT, name("retire"),
                make_tuple(conftool->ici_craft,
-                          std::string("Craft " + to_string(template_id) + " user " + new_asset_owner.to_string())))
+                          std::string("Craft " + to_string(template_id) + " - " + new_asset_owner.to_string())))
                 .send();
 
     if(conftool->icg_craft.amount > 0)
         action(permission_level{get_self(), name("active")}, TOKEN_CONTRACT, name("retire"),
                make_tuple(conftool->icg_craft,
-                          std::string("Craft " + to_string(template_id) + " user " + new_asset_owner.to_string())))
+                          std::string("Craft " + to_string(template_id) + " - " + new_asset_owner.to_string())))
                 .send();
 
 }

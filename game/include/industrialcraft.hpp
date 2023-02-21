@@ -66,6 +66,7 @@ CONTRACT industrialcraft : public contract {
 
     ACTION farm(const name &user,const uint64_t &assets_id);
     ACTION unfarm(const name &user,const uint64_t &assets_id);
+//    ACTION syncfarm(const name &user,const uint64_t &asset_id);
 
     ACTION fullrepair(const name &user,const uint64_t &asset_id);
 

@@ -171,7 +171,7 @@ void industrialcraft::unstake(name user, std::vector <uint64_t> asset_ids){
         bool f = true;
         if(toolstuck->availability==false){
             f = false;
-            if((toolstuck->time_hours*3600) <= (current_time_point().sec_since_epoch() - (toolstuck->time).sec_since_epoch())) {
+            if((toolstuck->time_hours*60) <= (current_time_point().sec_since_epoch() - (toolstuck->time).sec_since_epoch())) {
                 stucktool.modify(toolstuck, same_payer, [&](auto &row) {
                     row.availability = true;
                 });
