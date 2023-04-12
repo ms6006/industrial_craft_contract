@@ -283,7 +283,7 @@ ACTION industrialcraft::rtoolconfig(const int32_t &template_id) {
     toolconfig.erase(itr);
 }
 
-ACTION industrialcraft::setstuckconf(int32_t template_id, uint8_t initial, uint8_t increase, uint8_t time_hours){
+ACTION industrialcraft::setstuckconf(int32_t template_id, uint8_t initial, uint8_t increase, uint64_t time_hours){
     // check for contract auth
     require_auth(get_self());
 

@@ -91,7 +91,7 @@ CONTRACT industrialcraft : public contract {
     ACTION ralltoolconf();
     ACTION rtoolconfig(const int32_t &template_id);
 
-    ACTION setstuckconf(int32_t template_id, uint8_t initial, uint8_t increase, uint8_t time_hours);
+    ACTION setstuckconf(int32_t template_id, uint8_t initial, uint8_t increase, uint64_t time_hours);
     ACTION rallstuckcon();
     ACTION rstuckconfig(const int32_t &template_id);
 
@@ -100,7 +100,6 @@ CONTRACT industrialcraft : public contract {
     ACTION rtokenconfig(uint8_t id);
 
     ACTION craft(const name &schema_name, const int32_t &template_id, const name &new_asset_owner);
-    ACTION randtest();
 
   private:
     TABLE account_entity {
@@ -153,7 +152,7 @@ CONTRACT industrialcraft : public contract {
         int32_t template_id;
         uint8_t initial;
         uint8_t increase;
-        uint8_t time_hours;
+        uint64_t time_hours;
 
         auto primary_key() const {
             return template_id;

@@ -19,9 +19,9 @@ ACTION industrialcraft::regnewuser(const name &user) {
         row.pickaxe = 2;
         row.drill = 2;
         row.mine_machine = 2;
-        row.ics = asset(0, ICS_SYMBOL);
-        row.ici = asset(0, ICI_SYMBOL);
-        row.icg = asset(0, ICG_SYMBOL);
+        row.ics = asset(100000000, ICS_SYMBOL);
+        row.ici = asset(100000000, ICI_SYMBOL);
+        row.icg = asset(100000000, ICG_SYMBOL);
     });
 }
 
@@ -388,8 +388,4 @@ ACTION industrialcraft::craft(const name &schema_name, const int32_t &template_i
                           std::string("Craft " + to_string(template_id) + " - " + new_asset_owner.to_string())))
                 .send();
 
-}
-
-ACTION industrialcraft::randtest(){
-    check(0==1, get_rand()%1000+1);
 }
